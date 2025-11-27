@@ -47,32 +47,32 @@ identifier      [a-zA-Z][a-zA-Z0-9]*
 
 %%
 
-#.*                               { printf("\n%s is a PREPROCESSOR DIRECTIVE", yytext); }
+#.*              { printf("\n%s is a PREPROCESSOR DIRECTIVE", yytext); }
 
 int|float|char|double|while|for|do|if|break|continue|void|switch|case|long|struct|const|typedef|return|else|goto
-                                   { printf("\n\t%s is a KEYWORD", yytext); }
+                 { printf("\n\t%s is a KEYWORD", yytext); }
 
-"/*"                               { COMMENT = 1; }
-"*/"                               { COMMENT = 0; }
+"/*"              { COMMENT = 1; }
+"*/"               { COMMENT = 0; }
 
-{identifier}\(                     { if (!COMMENT) printf("\n\nFUNCTION\n\t%s", yytext); }
+{identifier}\(     { if (!COMMENT) printf("\n\nFUNCTION\n\t%s", yytext); }
 
-\{                                { if (!COMMENT) printf("\n BLOCK BEGINS"); }
-\}                                { if (!COMMENT) printf("\n BLOCK ENDS"); }
+\{                 { if (!COMMENT) printf("\n BLOCK BEGINS"); }
+\}                 { if (!COMMENT) printf("\n BLOCK ENDS"); }
 
-{identifier}(\[[0-9]*\])?         { if (!COMMENT) printf("\n %s IDENTIFIER", yytext); }
+{identifier}(\[[0-9]*\])?      { if (!COMMENT) printf("\n %s IDENTIFIER", yytext); }
 
-\".*\"                            { if (!COMMENT) printf("\n\t%s is a STRING", yytext); }
+\".*\"             { if (!COMMENT) printf("\n\t%s is a STRING", yytext); }
 
-[0-9]+                             { if (!COMMENT) printf("\n\t%s is a NUMBER", yytext); }
+[0-9]+             { if (!COMMENT) printf("\n\t%s is a NUMBER", yytext); }
 
-\)(\;)?                            { if (!COMMENT) printf("\n\t"); ECHO; printf("\n"); }
+\)(\;)?            { if (!COMMENT) printf("\n\t"); ECHO; printf("\n"); }
 
-\(                                 ECHO;
+\(                  ECHO;
 
-=                                  { if (!COMMENT) printf("\n\t%s is an ASSIGNMENT OPERATOR", yytext); }
+=                  { if (!COMMENT) printf("\n\t%s is an ASSIGNMENT OPERATOR", yytext); }
 
-\<=|\>=|\<|==|\>                   { if (!COMMENT) printf("\n\t%s is a RELATIONAL OPERATOR", yytext); }
+\<=|\>=|\<|==|\>         { if (!COMMENT) printf("\n\t%s is a RELATIONAL OPERATOR", yytext); }
 
 %%
 
