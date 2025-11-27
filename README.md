@@ -35,84 +35,44 @@
 7.	Compile that file with C compiler and verify the output.
 
 ## PROGRAM:
+exp2.l
 ```
-/* program name: ex.l */
+/* program name is ex.l */
 
 %{
-    int COMMENT = 0;
+int COMMENT = 0;
 %}
 
 identifier      [a-zA-Z][a-zA-Z0-9]*
 
 %%
 
-#.* {
-        printf("\n%s is a PREPROCESSOR DIRECTIVE", yytext);
-    }
+#.*                               { printf("\n%s is a PREPROCESSOR DIRECTIVE", yytext); }
 
-int|float|char|double|while|for|do|if|break|continue|void|switch|case|long|struct|const|typedef|return|else|goto 
-    {
-        printf("\n\t%s is a KEYWORD", yytext);
-    }
+int|float|char|double|while|for|do|if|break|continue|void|switch|case|long|struct|const|typedef|return|else|goto
+                                   { printf("\n\t%s is a KEYWORD", yytext); }
 
-"/*" {
-        COMMENT = 1;
-    }
+"/*"                               { COMMENT = 1; }
+"*/"                               { COMMENT = 0; }
 
-"*/" {
-        COMMENT = 0;
-    }
+{identifier}\(                     { if (!COMMENT) printf("\n\nFUNCTION\n\t%s", yytext); }
 
-{identifier}\( {
-        if (!COMMENT)
-            printf("\n\nFUNCTION\n\t%s", yytext);
-    }
+\{                                { if (!COMMENT) printf("\n BLOCK BEGINS"); }
+\}                                { if (!COMMENT) printf("\n BLOCK ENDS"); }
 
-\{ {
-        if (!COMMENT)
-            printf("\n BLOCK BEGINS");
-    }
+{identifier}(\[[0-9]*\])?         { if (!COMMENT) printf("\n %s IDENTIFIER", yytext); }
 
-\} {
-        if (!COMMENT)
-            printf("\n BLOCK ENDS");
-    }
+\".*\"                            { if (!COMMENT) printf("\n\t%s is a STRING", yytext); }
 
-{identifier}(\[[0-9]*\])? {
-        if (!COMMENT)
-            printf("\n %s IDENTIFIER", yytext);
-    }
+[0-9]+                             { if (!COMMENT) printf("\n\t%s is a NUMBER", yytext); }
 
-\".*\" {
-        if (!COMMENT)
-            printf("\n\t%s is a STRING", yytext);
-    }
+\)(\;)?                            { if (!COMMENT) printf("\n\t"); ECHO; printf("\n"); }
 
-[0-9]+ {
-        if (!COMMENT)
-            printf("\n\t%s is a NUMBER", yytext);
-    }
+\(                                 ECHO;
 
-\)(\;)? {
-        if (!COMMENT)
-            printf("\n\t");
-        ECHO;
-        printf("\n");
-    }
+=                                  { if (!COMMENT) printf("\n\t%s is an ASSIGNMENT OPERATOR", yytext); }
 
-\( {
-        ECHO;
-    }
-
-= {
-        if (!COMMENT)
-            printf("\n\t%s is an ASSIGNMENT OPERATOR", yytext);
-    }
-
-\<=|\>=|\<|==|\> {
-        if (!COMMENT)
-            printf("\n\t%s is a RELATIONAL OPERATOR", yytext);
-    }
+\<=|\>=|\<|==|\>                   { if (!COMMENT) printf("\n\t%s is a RELATIONAL OPERATOR", yytext); }
 
 %%
 
@@ -120,14 +80,13 @@ int main(int argc, char **argv)
 {
     if (argc > 1)
     {
-        FILE *file = fopen(argv[1], "r");
-
+        FILE *file;
+        file = fopen(argv[1], "r");
         if (!file)
         {
-            printf("could not open %s\n", argv[1]);
+            printf("could not open %s \n", argv[1]);
             exit(0);
         }
-
         yyin = file;
     }
 
@@ -140,6 +99,7 @@ int yywrap()
 {
     return 0;
 }
+
 
 ```
 
